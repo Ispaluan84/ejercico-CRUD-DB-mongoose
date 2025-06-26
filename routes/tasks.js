@@ -1,38 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const Task = require('../models/Tasks');
+const taskController = require ('../controllers/TaskController')
+
+router.get('/', taskController.getAll)
+
+router.post('/create', taskController.create);
 
 
-router.post('/create', async (req, res) => {
-  try {
-    const { title } = req.body;
-    const task = new Task({ title });
-    await task.save();
-    res.status(201).json(task);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
-router.get('/', async (req, res) => {
-  try {
-    const tasks = await Task.find();
-    res.json(tasks);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
-router.get('/id/:_id', async (req, res) => {
-  try {
-    const task = await Task.findById(req.params._id);
-    if (!task) return res.status(404).json({ message: 'Task not found' });
-    res.json(task);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+router.put('/id/:_id', taskController.updateByTitle);
 
 router.put('/markAsCompleted/:_id', async (req, res) => {
   try {
